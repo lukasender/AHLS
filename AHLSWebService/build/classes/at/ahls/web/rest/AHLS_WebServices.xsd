@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+	xmlns="http://www.ahls.at/AHLS_WebService"
+
+	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/jaxb/bindingschema_2_0.xsd"
+
+	targetNamespace="http://www.ahls.at/AHLS_WebService"
+	elementFormDefault="qualified" jxb:version="2.0">
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jxb:schemaBindings>
+				<jxb:package name="at.ahls.web.rest.api.jaxb" />
+			</jxb:schemaBindings>
+		</xsd:appinfo>
+	</xsd:annotation>
+
+	<xsd:element name="activity" type="activity-type" />
+	<xsd:element name="activities" type="activities-type" />
+
+	<xsd:complexType name="activity-type">
+		<xsd:attribute name="data" type="string255" use="required" />
+	</xsd:complexType>
+
+	<xsd:complexType name="activities-type">
+		<xsd:sequence>
+			<xsd:element name="activity" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="data" type="xsd:string" />
+					<xsd:attribute name="time" type="xsd:dateTime" />
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:simpleType name="string255">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>
