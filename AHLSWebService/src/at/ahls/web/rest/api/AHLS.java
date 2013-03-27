@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 
+import at.ahls.web.database.ActivityLog;
 import at.ahls.web.database.DBConnector;
 import at.ahls.web.rest.api.jaxb.ActivitiesType;
 import at.ahls.web.rest.api.jaxb.ActivityType;
@@ -36,7 +37,7 @@ public class AHLS {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getActivities(@PathParam("count") int count) {
 		// fetch from DB
-		ActivitiesType activities = DBConnector.getInstance().getActivities(count);
+		ActivitiesType activities = ActivityLog.getInstance().getActivities(count);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
@@ -57,7 +58,7 @@ public class AHLS {
 			return ResponseBuilder.badRequeset();
 		}
 		
-		DBConnector.getInstance().insertActivityLog(activity.getValue().getData());
+		ActivityLog.getInstance().insertActivityLog(activity.getValue().getData());
 		
 		return ResponseBuilder.ok();
 	}
