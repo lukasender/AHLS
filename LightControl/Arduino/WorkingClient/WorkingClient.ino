@@ -44,11 +44,17 @@ int outputValue = 0;        // value output to the PWM (analog out)
 //ensures that exact length of json is sent
 void contentBlock(char json[ ]){
 
+  int length = strlen(json);
+  if(length>=0){
       client.print("Content-Length:");
-      int length = strlen(json);
       client.println(length);
+      Serial.println(length);
+      client.println("Content-type: application/json");
+  }
       client.println();
+      if(length>=0){
       client.print(json);
+      }
      
 }
 
@@ -63,12 +69,12 @@ void writeResponse(){
 }
 
 //sends request address is without ip
-void sendRequest(char requestType[], char address[], char json[]){
+void sendRequest(char requestType[], char address[], char json[], IPAddress ip, int port){
   //set connectSuccess to false
   connectSuccess = false;
   Serial.println("connecting...");
   while(!connectSuccess){
-    if (client.connect(server, 80)) {
+    if (client.connect(ip, port)) {
       client.print(requestType);
       client.print(" ");
       client.print(address);
@@ -77,7 +83,9 @@ void sendRequest(char requestType[], char address[], char json[]){
       connectSuccess = true;
       //connection successful waiting for response
       writeResponse();
+      client.stop();
     }else{
+      Serial.println(client.available());
       Serial.println("connection failed");
     }
   }
@@ -87,8 +95,7 @@ void sendRequest(char requestType[], char address[], char json[]){
 
 void doSensorReading(){
   
-  IPAddress ip(192,0,168,245);
-  server=ip;
+  IPAddress ip(192,168,0,245);
   // read the analog in value:
   sensorValue = analogRead(analogInPin);            
   // map it to the range of the analog out:
@@ -106,11 +113,12 @@ void doSensorReading(){
   delay(5);
   char jsonBuffer[100];
   String jsonStart = String("{\"@data\":\"");
-  String jsonEnd = String("\"");
+  String jsonEnd = String("\"}}"); //second "}" because strlen recognizes one char to less
   String json=String(jsonStart+oldSensorValue+jsonEnd);
   char jsonChar[json.length()];
   json.toCharArray(jsonChar, json.length());
-  sendRequest("POST", "/AHLSWebService/ahls/log", jsonChar);
+  Serial.println(json);
+  sendRequest("POST", "/AHLSWebService/ahls/log", jsonChar, ip, 8080);
 }
 
 void setup() {
@@ -128,7 +136,7 @@ void setup() {
   delay(1000);
   
     while(connectSuccess == false){
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":false}");
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":false}", server, 80);
   }
 
 }
@@ -144,7 +152,7 @@ void loop()
     
     // do nothing forevermore:
     for(; testConnects<4; testConnects++){
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":true, \"ct\":153}");
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":true, \"ct\":153}", server, 80);
             
       client.stop();
 
@@ -155,7 +163,7 @@ void loop()
     
     if(testConnects==4){
 
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"alert\":\"lselect\"}");
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"alert\":\"lselect\"}", server, 80);
 
       client.stop();
 
