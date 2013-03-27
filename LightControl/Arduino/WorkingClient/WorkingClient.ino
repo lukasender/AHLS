@@ -20,9 +20,10 @@
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = {  
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress server(192,168,0,242); // Hue Bridge
+IPAddress server(192,168,0,243); // Hue Bridge
 
 boolean connectSuccess = false;
+boolean responseDelivered = false;
 int testConnects = 0;
 
 // Initialize the Ethernet client library
@@ -30,6 +31,8 @@ int testConnects = 0;
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
 
+
+//ensures that exact length of json is sent
 void contentBlock(char json[ ]){
 
       client.print("Content-Length:");
@@ -40,8 +43,20 @@ void contentBlock(char json[ ]){
      
 }
 
+//after one second writes response
+void writeResponse(){
+  delay(500);
+          while (client.available()) {
+            char c = client.read();
+            Serial.print(c);
+            responseDelivered = true;
+          }
+}
+
+//sends request address is without ip
 void sendRequest(char requestType[], char address[], char json[]){
-    connectSuccess = false;
+  //set connectSuccess to false
+  connectSuccess = false;
   Serial.println("connecting...");
   while(!connectSuccess){
     if (client.connect(server, 80)) {
@@ -51,6 +66,8 @@ void sendRequest(char requestType[], char address[], char json[]){
       client.println(" HTTP/1.0");
       contentBlock(json);
       connectSuccess = true;
+      //connection successful waiting for response
+      writeResponse();
     }else{
       Serial.println("connection failed");
     }
@@ -60,9 +77,6 @@ void sendRequest(char requestType[], char address[], char json[]){
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
 
   // start the Ethernet connection:
   if (Ethernet.begin(mac) == 0) {
@@ -75,38 +89,13 @@ void setup() {
   delay(1000);
   
     while(connectSuccess == false){
-
-    Serial.println("connecting...");
-
-    // if you get a connection, report back via serial:
-    if (client.connect(server, 80)) {
-      Serial.println("connected");
-      // Make a HTTP request:
-      client.println("PUT /api/stephan123/lights/3/state HTTP/1.0");
-      client.println("Content-Type:text/plain");
-//      contentBlock("{\"hue\":62100, \"sat\":255, \"bri\":64}");
-//      contentBlock("{\"hue\":46920, \"sat\":16, \"bri\":255, \"transitiontime\":20}");
-//      contentBlock("{\"alert\":\"select\"}");
-      contentBlock("{\"on\":false, \"transitiontime\":20}");
-//      contentBlock("{\"on\"=false"};
-      connectSuccess = true;
-    } 
-    else {
-      // kf you didn't get a connection to the server:
-      Serial.println("connection failed");
-    }
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":false}");
   }
 
 }
 
 void loop()
 {
-  // if there are incoming bytes available 
-  // from the server, read them and print them:
-  if (client.available()) {
-    char c = client.read();
-    Serial.print(c);
-  }
 
   // if the server's disconnected, stop the client:
   if (!client.connected()) {
@@ -114,23 +103,31 @@ void loop()
     Serial.println("disconnecting.");
     client.stop();
     
-
     // do nothing forevermore:
     for(; testConnects<4; testConnects++){
-//      sendRequest("PUT", "/api/stephan123/lights/3/state", "{\"bri\":64}");
-//      client.stop();
-//      delay(1000);
-//      Serial.print("Test connect count:");
-//      Serial.println(testConnects);
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":true, \"ct\":153}");
+            
+      client.stop();
+
+      Serial.println();
+      Serial.print("Test connect count:");
+      Serial.println(testConnects);
     }
     
     if(testConnects==4){
-      //sendRequest("PUT", "/api/stephan123/lights/3/state", "{\"on\":false}");
+
+      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"alert\":\"lselect\"}");
+
+      client.stop();
+
+      Serial.println();
+      Serial.print("Test connect count:");
+      Serial.println(testConnects);
       for(;;)
         ;
+      }
+
     }
-  
-  }
 }
 
 
