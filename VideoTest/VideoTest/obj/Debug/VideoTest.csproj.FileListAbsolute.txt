@@ -1,0 +1,12 @@
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\VideoTest.exe
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\VideoTest.pdb
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\AForge.Video.dll
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\AForge.Video.xml
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\VideoTest.Form1.resources
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\VideoTest.Properties.Resources.resources
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\VideoTest.csproj.GenerateResource.Cache
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\VideoTest.exe
+C:\Users\Matthias Amann\Matthias\Projekte\VideoTest\VideoTest\obj\Debug\VideoTest.pdb
