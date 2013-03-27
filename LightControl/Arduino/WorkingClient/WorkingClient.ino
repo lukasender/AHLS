@@ -16,6 +16,7 @@
 #include <SPI.h>
 #include <Ethernet.h>
 
+//REST CLIENT
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = {  
@@ -31,7 +32,15 @@ int testConnects = 0;
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
 
+//MOTION DETECTION
+const int analogInPin = A0;  //PIR Read
+const int analogOutPin = 9; // PIR Write
 
+int sensorValue = 0;        // value read from PIR
+int oldSensorValue = 0;      // old value from PIR
+int outputValue = 0;        // value output to the PWM (analog out)
+
+//REST CLIENT
 //ensures that exact length of json is sent
 void contentBlock(char json[ ]){
 
@@ -72,6 +81,36 @@ void sendRequest(char requestType[], char address[], char json[]){
       Serial.println("connection failed");
     }
   }
+}
+
+//MOTION DETECTION
+
+void doSensorReading(){
+  
+  IPAddress ip(192,0,168,245);
+  server=ip;
+  // read the analog in value:
+  sensorValue = analogRead(analogInPin);            
+  // map it to the range of the analog out:
+  outputValue = map(sensorValue, 0, 1023, 0, 255);  
+  // change the analog out value:
+  analogWrite(analogOutPin, outputValue);           
+
+    Serial.print("\t median = ");      
+    Serial.println((oldSensorValue+sensorValue)/2);   
+  oldSensorValue = (oldSensorValue+sensorValue)/2;
+
+  // wait 5 milliseconds before the next loop
+  // for the analog-to-digital converter to settle
+  // after the last reading:
+  delay(5);
+  char jsonBuffer[100];
+  String jsonStart = String("{\"@data\":\"");
+  String jsonEnd = String("\"");
+  String json=String(jsonStart+oldSensorValue+jsonEnd);
+  char jsonChar[json.length()];
+  json.toCharArray(jsonChar, json.length());
+  sendRequest("POST", "/AHLSWebService/ahls/log", jsonChar);
 }
 
 void setup() {
@@ -124,7 +163,7 @@ void loop()
       Serial.print("Test connect count:");
       Serial.println(testConnects);
       for(;;)
-        ;
+        doSensorReading();
       }
 
     }
