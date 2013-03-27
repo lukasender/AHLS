@@ -111,11 +111,11 @@ namespace VideoTest
                         }
                     }
                 }
-                PostParamCollection postParamCollection = new PostParamCollection();
-                postParamCollection.Add(new PostParam("Time", DateTime.Now.ToString("HH:mm")));                    //TODO: Parameter
-                string sendImage = image.ToString();
-                postParamCollection.Add(new PostParam("Image", sendImage));
-                httpPost.doPost(postParamCollection);
+                //PostParamCollection postParamCollection = new PostParamCollection();
+                //postParamCollection.Add(new PostParam("Time", DateTime.Now.ToString("HH:mm")));                    //TODO: Parameter
+                //string sendImage = image.ToString();
+                //postParamCollection.Add(new PostParam("Image", sendImage));
+                //httpPost.doPost(postParamCollection);
                 pictureBoxChange.Image = image;
                 oldPic = (Bitmap)newPic.Clone();
             }
