@@ -3,6 +3,7 @@ package at.ahls.web.rest.api;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -11,8 +12,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 
-import at.ahls.web.database.ActivityLog;
-import at.ahls.web.database.DBConnector;
+import at.ahls.database.ActivityLog;
+import at.ahls.database.DBConnector;
+import at.ahls.light.controller.LightController;
+import at.ahls.light.data.LightState;
+import at.ahls.test.jaxb.LightStateType;
 import at.ahls.web.rest.api.jaxb.ActivitiesType;
 import at.ahls.web.rest.api.jaxb.ActivityType;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
@@ -29,6 +33,20 @@ public class AHLS {
 	@GET @Path("/test")
 	public Response testConnection() {		
 		System.out.println("Test successful? " + DBConnector.getInstance().testConnection());
+		
+		return ResponseBuilder.ok();
+	}
+	
+	@PUT @Path("/test")
+	@Consumes({MediaType.APPLICATION_JSON})
+	public Response testConnection(JAXBElement<LightStateType> lightState) {
+		System.out.println("AHLS - testConnectino(): ok... something came right here. Let me analyze it quickly.");
+		LightStateType ls = lightState.getValue();
+		
+		System.out.println(ls.isOn());
+		System.out.println(ls.getBri());
+		System.out.println(ls.getHue());
+		System.out.println(ls.getSat());
 		
 		return ResponseBuilder.ok();
 	}
