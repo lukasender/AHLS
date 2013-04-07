@@ -1,8 +1,8 @@
 package at.ahls.test;
 
 import at.ahls.controller.MainController;
-import at.ahls.light.controller.LightController;
-import at.ahls.light.data.LightState;
+import at.ahls.controller.usecase.LightController;
+import at.ahls.light.LightState;
 import at.ahls.web.http.exception.UnsuccessfulRequestException;
 
 public class Test {

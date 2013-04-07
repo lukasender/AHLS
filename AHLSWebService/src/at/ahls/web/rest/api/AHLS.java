@@ -12,14 +12,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 
-import at.ahls.database.ActivityLog;
-import at.ahls.database.DBConnector;
-import at.ahls.light.controller.LightController;
-import at.ahls.light.data.LightState;
+import at.ahls.controller.MainController;
+import at.ahls.controller.usecase.ActivityLogController;
+import at.ahls.controller.usecase.UserController;
+import at.ahls.database.DBConnectionController;
 import at.ahls.test.jaxb.LightStateType;
-import at.ahls.web.rest.api.jaxb.ActivitiesType;
-import at.ahls.web.rest.api.jaxb.ActivityType;
+import at.ahls.web.rest.api.jaxb.ActivitiesDto;
+import at.ahls.web.rest.api.jaxb.ActivityDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
+import at.ahls.web.rest.api.jaxb.UserDto;
 import at.ahls.web.rest.util.ResponseBuilder;
 
 @Path("/ahls")
@@ -32,7 +33,7 @@ public class AHLS {
 	
 	@GET @Path("/test")
 	public Response testConnection() {		
-		System.out.println("Test successful? " + DBConnector.getInstance().testConnection());
+		System.out.println("Test successful? " + DBConnectionController.getInstance().testConnection());
 		
 		return ResponseBuilder.ok();
 	}
@@ -55,19 +56,20 @@ public class AHLS {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response getActivities(@PathParam("count") int count) {
 		// fetch from DB
-		ActivitiesType activities = ActivityLog.getInstance().getActivities(count);
+		ActivityLogController controller = MainController.getInstance().getActivityLogController();
+		ActivitiesDto activities = controller.getActivities(count);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
-		JAXBElement<ActivitiesType> entity = of.createActivities(activities);
+		JAXBElement<ActivitiesDto> entity = of.createActivities(activities);
 		
 		// return response and data
-		return Response.ok().entity(new GenericEntity<JAXBElement<ActivitiesType>>(entity) {}).build();
+		return Response.ok().entity(new GenericEntity<JAXBElement<ActivitiesDto>>(entity) {}).build();
 	}
 	
 	@POST @Path("/log")
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response logActivity(JAXBElement<ActivityType> activity) {
+	public Response logActivity(JAXBElement<ActivityDto> activity) {
 		// fetch from DB
 		String data = activity.getValue().getData();
 		System.out.println("POST /log: getData: " + activity.getValue().getData());
@@ -76,9 +78,30 @@ public class AHLS {
 			return ResponseBuilder.badRequeset();
 		}
 		
-		ActivityLog.getInstance().insertActivityLog(activity.getValue().getData());
+		ActivityLogController controller = MainController.getInstance().getActivityLogController();
+		controller.insertActivityLog(activity.getValue().getData());
 		
 		return ResponseBuilder.ok();
+	}
+	
+	@POST @Path("/user")
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response createUser() {
+		System.out.println("POST /user");
+		UserController controller = MainController.getInstance().getUserController();
+		
+		// create new user
+		String username = controller.createNewUser();
+		System.out.println("POST /user: new user name: " + username);
+		UserDto user = new UserDto();
+		user.setUsername(username);
+		
+		// create entity
+		ObjectFactory of = new ObjectFactory();
+		JAXBElement<UserDto> entity = of.createUser(user);
+				
+		// return response and data	
+		return Response.ok().entity(new GenericEntity<JAXBElement<UserDto>>(entity) {}).build();
 	}
 	
 }

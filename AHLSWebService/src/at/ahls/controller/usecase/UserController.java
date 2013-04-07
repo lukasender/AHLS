@@ -1,0 +1,120 @@
+package at.ahls.controller.usecase;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import at.ahls.database.DBConnectionController;
+import at.ahls.model.UserModel;
+
+public class UserController {
+
+	private static UserController _controller;
+	
+	private UserController() {}
+	
+	public static UserController getInstance() {
+		if (_controller == null) {
+			_controller = new UserController();
+		}
+		
+		return _controller;
+	}
+	
+	public UserModel getUser() {
+		return null;
+	}
+	
+	/**
+	 * Creates and inserts a new user.
+	 * @return If successful: unique user name, null otherwise.
+	 */
+	public String createNewUser() {
+		UserModel user = new UserModel(createNewUsername());
+		String sql = user.createInsertSQL();
+		
+		Statement statement = null;
+		try {
+			statement = DBConnectionController.getInstance().getConnection().createStatement();
+			int result = statement.executeUpdate(sql);
+			
+			System.out.println();
+			return (result == 1) ? user.getUsername() : null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
+		}
+	}
+	
+	private String createNewUsername() {
+		String username = "username" + (countUsers() + 1);
+		System.out.println(username);
+		String hashedUsername = toSHA1(username.getBytes());
+
+		return hashedUsername;
+	}
+	
+	private int countUsers() {
+		ResultSet result = null;
+		
+		try {
+			int count = -1;
+			Statement statement = DBConnectionController.getInstance().getConnection().createStatement();
+			String queryString = "SELECT count(id) " 
+					+ "FROM " + "user";
+
+			result = statement.executeQuery(queryString);
+			
+			while (result.next()) {
+				count = result.getInt(1);
+			}
+
+			return count;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (result != null) {
+				try {
+					result.close();
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
+
+		}
+		
+		return -1;
+	}
+	
+	public static String toSHA1(byte[] convertme) {
+	    MessageDigest md = null;
+	    try {
+	        md = MessageDigest.getInstance("SHA-1");
+	    }
+	    catch(NoSuchAlgorithmException e) {
+	        e.printStackTrace();
+	    } 
+	    
+	    return byteArrayToHexString(md.digest(convertme));
+	}
+	
+	public static String byteArrayToHexString(byte[] b) {
+		  String result = "";
+		  for (int i=0; i < b.length; i++) {
+		    result +=
+		          Integer.toString( ( b[i] & 0xff ) + 0x100, 16).substring( 1 );
+		  }
+		  return result;
+	}
+	
+}

@@ -1,6 +1,9 @@
 package at.ahls.controller;
 
-import at.ahls.light.controller.LightController;
+import at.ahls.controller.usecase.ActivityLogController;
+import at.ahls.controller.usecase.LightController;
+import at.ahls.controller.usecase.UserController;
+import at.ahls.database.DBConnectionController;
 
 public class MainController {
 
@@ -18,6 +21,18 @@ public class MainController {
 	
 	public LightController getLightController() {
 		return LightController.getInstance();
+	}
+	
+	public DBConnectionController getDBConnectorController() {
+		return DBConnectionController.getInstance();
+	}
+	
+	public ActivityLogController getActivityLogController() {
+		return ActivityLogController.getInstance();
+	}
+	
+	public UserController getUserController() {
+		return UserController.getInstance();
 	}
 
 }

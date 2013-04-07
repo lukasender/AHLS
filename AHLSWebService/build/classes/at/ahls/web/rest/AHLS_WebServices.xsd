@@ -16,14 +16,15 @@
 		</xsd:appinfo>
 	</xsd:annotation>
 
-	<xsd:element name="activity" type="activity-type" />
-	<xsd:element name="activities" type="activities-type" />
+	<xsd:element name="activity" type="activity-dto" />
+	<xsd:element name="activities" type="activities-dto" />
+	<xsd:element name="user" type="user-dto" />
 
-	<xsd:complexType name="activity-type">
+	<xsd:complexType name="activity-dto">
 		<xsd:attribute name="data" type="string255" use="required" />
 	</xsd:complexType>
 
-	<xsd:complexType name="activities-type">
+	<xsd:complexType name="activities-dto">
 		<xsd:sequence>
 			<xsd:element name="activity" minOccurs="0" maxOccurs="unbounded">
 				<xsd:complexType>
@@ -32,6 +33,10 @@
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="user-dto">
+		<xsd:attribute name="username" type="string255" use="required" />
 	</xsd:complexType>
 
 	<xsd:simpleType name="string255">
