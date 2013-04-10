@@ -3,7 +3,6 @@ package at.ahls.web.rest.api;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -15,10 +14,9 @@ import javax.xml.bind.JAXBElement;
 import at.ahls.controller.MainController;
 import at.ahls.controller.usecase.ActivityLogController;
 import at.ahls.controller.usecase.UserController;
-import at.ahls.database.DBConnectionController;
-import at.ahls.test.jaxb.LightStateType;
 import at.ahls.web.rest.api.jaxb.ActivitiesDto;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
+import at.ahls.web.rest.api.jaxb.LightsDataDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
 import at.ahls.web.rest.api.jaxb.UserDto;
 import at.ahls.web.rest.util.ResponseBuilder;
@@ -32,22 +30,27 @@ public class AHLS {
 	}
 	
 	@GET @Path("/test")
+	@Produces({MediaType.APPLICATION_JSON})
 	public Response testConnection() {		
-		System.out.println("Test successful? " + DBConnectionController.getInstance().testConnection());
+//		System.out.println("Test successful? " + DBConnectionController.getInstance().testConnection());
+		ObjectFactory of = new ObjectFactory();
+		ActivityDto dto = new ActivityDto();
+		dto.setData("1338");
 		
-		return ResponseBuilder.ok();
+		JAXBElement<ActivityDto> entity = of.createActivity(dto);
+		
+		return Response.ok().entity(new GenericEntity<JAXBElement<ActivityDto>>(entity) {}).build();
 	}
 	
-	@PUT @Path("/test")
+	@POST @Path("/test")
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response testConnection(JAXBElement<LightStateType> lightState) {
+	public Response testConnection(JAXBElement<ActivityDto> dto) {
 		System.out.println("AHLS - testConnectino(): ok... something came right here. Let me analyze it quickly.");
-		LightStateType ls = lightState.getValue();
+		System.out.println(dto == null);
+		ActivityDto data = dto.getValue();
 		
-		System.out.println(ls.isOn());
-		System.out.println(ls.getBri());
-		System.out.println(ls.getHue());
-		System.out.println(ls.getSat());
+		System.out.println(data.getData());
+		System.out.println(data.getTime());
 		
 		return ResponseBuilder.ok();
 	}
@@ -69,10 +72,10 @@ public class AHLS {
 	
 	@POST @Path("/log")
 	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
 	public Response logActivity(JAXBElement<ActivityDto> activity) {
 		// fetch from DB
 		String data = activity.getValue().getData();
-		System.out.println("POST /log: getData: " + activity.getValue().getData());
 		System.out.println("POST /log: data: " + data);
 		if (data == null || data != null && ( "null".equals(data) || data.isEmpty())) {
 			return ResponseBuilder.badRequeset();
@@ -81,7 +84,16 @@ public class AHLS {
 		ActivityLogController controller = MainController.getInstance().getActivityLogController();
 		controller.insertActivityLog(activity.getValue().getData());
 		
-		return ResponseBuilder.ok();
+		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().prepareLightData();
+		
+		// create entity
+		ObjectFactory of = new ObjectFactory();
+		JAXBElement<LightsDataDto> entity = of.createLightsData(lightsDataDto);
+		
+		
+				
+		// return response and data
+		return Response.ok().entity(new GenericEntity<JAXBElement<LightsDataDto>>(entity) {}).build();
 	}
 	
 	@POST @Path("/user")

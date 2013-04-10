@@ -12,20 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for activities-dto complex type.
+ * <p>Java class for lights-data-dto complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="activities-dto">
+ * &lt;complexType name="lights-data-dto">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="activity" type="{http://www.ahls.at/AHLS_WebService}activity-dto" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="light-data" type="{http://www.ahls.at/AHLS_WebService}light-data-dto" maxOccurs="50" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,40 +36,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "activities-dto", propOrder = {
-    "activity"
+@XmlType(name = "lights-data-dto", propOrder = {
+    "lightData"
 })
-public class ActivitiesDto {
+public class LightsDataDto {
 
-    protected List<ActivityDto> activity;
+    @XmlElement(name = "light-data")
+    protected List<LightDataDto> lightData;
 
     /**
-     * Gets the value of the activity property.
+     * Gets the value of the lightData property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the activity property.
+     * This is why there is not a <CODE>set</CODE> method for the lightData property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getActivity().add(newItem);
+     *    getLightData().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ActivityDto }
+     * {@link LightDataDto }
      * 
      * 
      */
-    public List<ActivityDto> getActivity() {
-        if (activity == null) {
-            activity = new ArrayList<ActivityDto>();
+    public List<LightDataDto> getLightData() {
+        if (lightData == null) {
+            lightData = new ArrayList<LightDataDto>();
         }
-        return this.activity;
+        return this.lightData;
     }
 
 }

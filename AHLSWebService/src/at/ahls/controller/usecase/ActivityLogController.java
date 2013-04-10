@@ -13,7 +13,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import at.ahls.database.DBConnectionController;
 import at.ahls.model.ActivityLogModel;
 import at.ahls.web.rest.api.jaxb.ActivitiesDto;
-import at.ahls.web.rest.api.jaxb.ActivitiesDto.Activity;
+import at.ahls.web.rest.api.jaxb.ActivityDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
 
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -63,10 +63,10 @@ public class ActivityLogController {
 			result = statement.executeQuery(queryString);
 			ObjectFactory of = new ObjectFactory();
 			ActivitiesDto activities = of.createActivitiesDto();
-			List<Activity> activitiesList = activities.getActivity();
+			List<ActivityDto> activitiesList = activities.getActivity();
 
 			while (result.next()) {
-				Activity activity = new Activity();
+				ActivityDto activity = new ActivityDto();
 				activity.setData(result.getString("data"));
 
 				Timestamp time = result.getTimestamp("time");
