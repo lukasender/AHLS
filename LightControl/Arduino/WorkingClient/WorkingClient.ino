@@ -21,7 +21,7 @@
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = {  
   0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-IPAddress server(192,168,0,243); // Hue Bridge
+IPAddress server(192,168,0,242); // Hue Bridge
 
 boolean connectSuccess = false;
 boolean responseDelivered = false;
@@ -60,12 +60,14 @@ void contentBlock(char json[ ]){
 
 //after one second writes response
 void writeResponse(){
-  delay(500);
+  //while client is connected or has unread buffered bytes
+  while(client.connected()){
           while (client.available()) {
             char c = client.read();
             Serial.print(c);
             responseDelivered = true;
           }
+  }
 }
 
 //sends request address is without ip
@@ -136,7 +138,7 @@ void setup() {
   delay(1000);
   
     while(connectSuccess == false){
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":false}", server, 80);
+      sendRequest("PUT", "/api/stephan123/lights/1/state", "{\"on\":false}", server, 80);
   }
 
 }
@@ -152,7 +154,7 @@ void loop()
     
     // do nothing forevermore:
     for(; testConnects<4; testConnects++){
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"on\":true, \"ct\":153}", server, 80);
+      sendRequest("PUT", "/api/stephan123/lights/1/state", "{\"on\":true, \"ct\":153}", server, 80);
             
       client.stop();
 
@@ -163,7 +165,7 @@ void loop()
     
     if(testConnects==4){
 
-      sendRequest("PUT", "/api/stephan123/lights/2/state", "{\"alert\":\"lselect\"}", server, 80);
+      sendRequest("PUT", "/api/stephan123/lights/1/state", "{\"alert\":\"lselect\"}", server, 80);
 
       client.stop();
 
