@@ -10,8 +10,10 @@ import java.util.List;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import at.ahls.controller.MainController;
 import at.ahls.database.DBConnectionController;
 import at.ahls.model.ActivityLogModel;
+import at.ahls.model.UserModel;
 import at.ahls.web.rest.api.jaxb.ActivitiesDto;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
@@ -33,18 +35,25 @@ public class ActivityLogController {
 		return _controller;
 	}
 	
-	public int insertActivityLog(String data) {
-		System.out.println("DBConnector: insertActivityLog: trying to insert");
-		ActivityLogModel activity = new ActivityLogModel(data);
-		String sql = activity.createInsertSQL(); 
+	public int insertActivityLog(int sensorId, String username, String data) {
+		System.out.println("ActivityLogController: insertActivityLog: trying to insert");
 		
 		Statement statement = null;
 		try {
+			// find user.
+			UserModel user = MainController.getInstance().getUserController().getUser(username);
+			
+			// prepare SQL
+			ActivityLogModel activity = new ActivityLogModel(sensorId, user.getId(), data);
+			String sql = activity.createInsertSQL(); 
+			
 			statement = DBConnectionController.getInstance().getConnection().createStatement();
 			int result = statement.executeUpdate(sql);
-
-			System.out.println();
+			
 			return result;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return -1;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return -1;
@@ -54,11 +63,11 @@ public class ActivityLogController {
 	}
 
 	public ActivitiesDto getActivities(int count) {
-		System.out.println("DBConnector: getActivities: trying to fetch data");
+		System.out.println("ActivityLogController: getActivities: trying to fetch data");
 		ResultSet result = null;
 		try {
 			Statement statement = DBConnectionController.getInstance().getConnection().createStatement();
-			String queryString = ActivityLogModel.createSelectSQL(count);
+			String queryString = ActivityLogModel.createSelectDataUserRelationSQL(count);
 
 			result = statement.executeQuery(queryString);
 			ObjectFactory of = new ObjectFactory();
@@ -67,6 +76,8 @@ public class ActivityLogController {
 
 			while (result.next()) {
 				ActivityDto activity = new ActivityDto();
+				activity.setSensorId(result.getInt("sensor"));
+				activity.setUsername(result.getString("username"));
 				activity.setData(result.getString("data"));
 
 				Timestamp time = result.getTimestamp("time");

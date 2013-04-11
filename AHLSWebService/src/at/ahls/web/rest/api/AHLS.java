@@ -32,14 +32,15 @@ public class AHLS {
 	@GET @Path("/test")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response testConnection() {		
-//		System.out.println("Test successful? " + DBConnectionController.getInstance().testConnection());
-		ObjectFactory of = new ObjectFactory();
-		ActivityDto dto = new ActivityDto();
-		dto.setData("1338");
-		
-		JAXBElement<ActivityDto> entity = of.createActivity(dto);
-		
-		return Response.ok().entity(new GenericEntity<JAXBElement<ActivityDto>>(entity) {}).build();
+		System.out.println("Test successful? " + MainController.getInstance().getDBConnectorController().testConnection());
+//		ObjectFactory of = new ObjectFactory();
+//		ActivityDto dto = new ActivityDto();
+//		dto.setData("1338");
+//		
+//		JAXBElement<ActivityDto> entity = of.createActivity(dto);
+//		
+//		return Response.ok().entity(new GenericEntity<JAXBElement<ActivityDto>>(entity) {}).build();
+		return ResponseBuilder.ok();
 	}
 	
 	@POST @Path("/test")
@@ -82,15 +83,16 @@ public class AHLS {
 		}
 		
 		ActivityLogController controller = MainController.getInstance().getActivityLogController();
-		controller.insertActivityLog(activity.getValue().getData());
+		ActivityDto activityDto = activity.getValue();
+		controller.insertActivityLog(activityDto.getSensorId(), activityDto.getUsername(), activityDto.getData());
 		
-		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().prepareLightData();
+		
+		// dummy data
+		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().prepareLightData(1);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
 		JAXBElement<LightsDataDto> entity = of.createLightsData(lightsDataDto);
-		
-		
 				
 		// return response and data
 		return Response.ok().entity(new GenericEntity<JAXBElement<LightsDataDto>>(entity) {}).build();

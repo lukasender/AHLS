@@ -34,7 +34,8 @@ public class DBConnectionController {
 		try {
 			Context initCtx = new InitialContext();
 			Context envCtx = (Context) initCtx.lookup("java:comp/env");
-			DataSource ds = (DataSource) envCtx.lookup("jdbc/ahls");
+//			DataSource ds = (DataSource) envCtx.lookup("jdbc/ahls");
+			DataSource ds = (DataSource) envCtx.lookup("jdbc/ahls_v1");
 
 			_connection = ds.getConnection();
 

@@ -49,4 +49,12 @@ public class UserModel {
 		
 		return statement;
 	}
+	
+	public static String createSelectSQL(String username) {
+		String statement = "SELECT id, username, registered "
+				+ "FROM user "
+				+ "WHERE username = '" + username + "';";
+		
+		return statement;
+	}
 }

@@ -5,9 +5,21 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import at.ahls.database.DBConnectionController;
+import at.ahls.model.ActivityLogModel;
 import at.ahls.model.UserModel;
+import at.ahls.web.rest.api.jaxb.ActivitiesDto;
+import at.ahls.web.rest.api.jaxb.ActivityDto;
+import at.ahls.web.rest.api.jaxb.ObjectFactory;
 
 public class UserController {
 
@@ -54,6 +66,49 @@ public class UserController {
 				}
 			}
 		}
+	}
+	
+	public UserModel getUser(String username) {
+		System.out.println("UserController: getUser: trying to fetch data");
+		ResultSet result = null;
+		try {
+			Statement statement = DBConnectionController.getInstance().getConnection().createStatement();
+			String queryString = UserModel.createSelectSQL(username);
+
+			result = statement.executeQuery(queryString);
+			UserModel user = new UserModel();
+
+			int count = 0;
+			while (result.next()) {
+				count++;
+				System.out.println("UserController: getUser: found " + count + " with username '" + username + "'.");
+				user.setId(result.getInt("id"));
+				user.setUsername(result.getString("username"));
+				user.setRegistered(result.getTimestamp("registered"));
+			}
+			
+			if (count == 0) {
+				throw new IllegalArgumentException("No user found.");
+			}
+			
+			if (count > 1) {
+				throw new IllegalArgumentException("More than one user");
+			}
+
+			return user;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (result != null) {
+				try {
+					result.close();
+				} catch (SQLException e) {
+					// ignore
+				}
+			}
+		}
+
+		return null;
 	}
 	
 	private String createNewUsername() {

@@ -23,6 +23,12 @@
 	<xsd:element name="light-data" type="light-data-dto" />
 
 	<xsd:complexType name="activity-dto">
+		<xsd:attribute name="sensor-id" type="sensor-id" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Represents the sensor id.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="username" type="string255" use="required" />
 		<xsd:attribute name="data" type="string255" use="required" />
 		<xsd:attribute name="time" type="xsd:dateTime" />
 	</xsd:complexType>
@@ -56,6 +62,13 @@
 		</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
+	
+	<xsd:simpleType name="sensor-id">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="1" />
+			<xsd:maxInclusive value="256" />
+		</xsd:restriction>
+	</xsd:simpleType>
 	
 	<xsd:simpleType name="colorTemperature">
 		<xsd:restriction base="xsd:integer">

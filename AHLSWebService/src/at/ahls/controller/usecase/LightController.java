@@ -30,7 +30,7 @@ public class LightController {
 		new HTTPRequest(_url, state.toJSON(), HTTPMethod.PUT).connect();
 	}
 	
-	public LightsDataDto prepareLightData() {
+	public LightsDataDto prepareLightData(int sensorId) {
 		LightsDataDto lightsData = new LightsDataDto();
 		
 		LightDataDto light1 = new LightDataDto();
