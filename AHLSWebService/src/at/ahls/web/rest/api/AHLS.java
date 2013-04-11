@@ -45,15 +45,20 @@ public class AHLS {
 	
 	@POST @Path("/test")
 	@Consumes({MediaType.APPLICATION_JSON})
-	public Response testConnection(JAXBElement<ActivityDto> dto) {
+	public Response testConnection(JAXBElement<ActivityDto> activity) {
 		System.out.println("AHLS - testConnectino(): ok... something came right here. Let me analyze it quickly.");
-		System.out.println(dto == null);
-		ActivityDto data = dto.getValue();
 		
-		System.out.println(data.getData());
-		System.out.println(data.getTime());
+		ActivityDto activityDto = activity.getValue();
 		
-		return ResponseBuilder.ok();
+		// dummy data
+		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
+		
+		// create entity
+		ObjectFactory of = new ObjectFactory();
+		JAXBElement<LightsDataDto> entity = of.createLightsData(lightsDataDto);
+				
+		// return response and data
+		return Response.ok().entity(new GenericEntity<JAXBElement<LightsDataDto>>(entity) {}).build();
 	}
 
 	@GET @Path("/log/{count}")
@@ -88,7 +93,7 @@ public class AHLS {
 		
 		
 		// dummy data
-		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().prepareLightData(1);
+		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();

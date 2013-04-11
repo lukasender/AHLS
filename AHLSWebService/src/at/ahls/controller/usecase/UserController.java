@@ -5,21 +5,9 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import javax.xml.datatype.DatatypeConstants;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import at.ahls.database.DBConnectionController;
-import at.ahls.model.ActivityLogModel;
 import at.ahls.model.UserModel;
-import at.ahls.web.rest.api.jaxb.ActivitiesDto;
-import at.ahls.web.rest.api.jaxb.ActivityDto;
-import at.ahls.web.rest.api.jaxb.ObjectFactory;
 
 public class UserController {
 
