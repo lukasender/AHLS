@@ -53,7 +53,7 @@
 		<xsd:attribute name="on" type="xsd:boolean" />
 		<xsd:attribute name="ct" type="colorTemperature" />
 		<xsd:attribute name="bri" type="brightness" />
-		<xsd:attribute name="tt" type="xsd:unsignedInt">
+		<xsd:attribute name="transitiontime" type="xsd:unsignedInt">
 		<xsd:annotation>
 			<xsd:documentation>
 				Transition Time: Gibt die Zeit in 100ms an.

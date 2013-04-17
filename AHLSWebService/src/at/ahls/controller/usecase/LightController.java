@@ -36,7 +36,7 @@ public class LightController {
 		light.setOn(true);
 		light.setCt(153);
 		light.setBri(255);
-		light.setTt(Long.valueOf(50));
+		light.setTransitiontime(Long.valueOf(50));
 		
 		return light;
 	}
@@ -56,8 +56,7 @@ public class LightController {
 		light.setOn(true);
 		light.setCt(153);
 		light.setBri(brightness);
-		light.setTt(Long.valueOf(50));
-		
+		light.setTransitiontime(Long.valueOf(50));
 		
 		return light;
 	}
