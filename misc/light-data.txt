@@ -1,8 +1,6 @@
 {
-	"light-data":
-	[
-		{"@transitiontime":"50","@bri":"255","@ct":"153","@light-id":"1","@on":"true"},
-		{"@transitiontime":"50","@bri":"255","@ct":"153","@light-id":"2","@on":"true"},
-		{"@transitiontime":"50","@bri":"255","@ct":"153","@light-id":"3","@on":"true"}
-	]
+	"@tt":"50",
+	"@bri":"255",
+	"@ct":"153",
+	"@on":"true"
 }

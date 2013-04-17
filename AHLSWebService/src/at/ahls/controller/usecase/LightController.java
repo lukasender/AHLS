@@ -31,39 +31,17 @@ public class LightController {
 		new HTTPRequest(_url, state.toJSON(), HTTPMethod.PUT).connect();
 	}
 	
-	public LightsDataDto prepareDummyLightData() {
-		LightsDataDto lightsData = new LightsDataDto();
+	public LightDataDto prepareDummyLightData() {
+		LightDataDto light = new LightDataDto();
+		light.setOn(true);
+		light.setCt(153);
+		light.setBri(255);
+		light.setTt(Long.valueOf(50));
 		
-		LightDataDto light1 = new LightDataDto();
-		light1.setLightId(1);
-		light1.setOn(true);
-		light1.setCt(153);
-		light1.setBri(255);
-		light1.setTransitiontime(Long.valueOf(50));
-		
-		LightDataDto light2 = new LightDataDto();
-		light2.setLightId(2);
-		light2.setOn(true);
-		light2.setCt(153);
-		light2.setBri(255);
-		light2.setTransitiontime(Long.valueOf(50));
-		
-		LightDataDto light3 = new LightDataDto();
-		light3.setLightId(3);
-		light3.setOn(true);
-		light3.setCt(153);
-		light3.setBri(255);
-		light3.setTransitiontime(Long.valueOf(50));
-		
-		lightsData.getLightData().add(light1);
-		lightsData.getLightData().add(light2);
-		lightsData.getLightData().add(light3);
-		
-		return lightsData;
+		return light;
 	}
 
-	public LightsDataDto reactOnActivityData(ActivityDto activity) {
-		LightsDataDto lightsData = new LightsDataDto();
+	public LightDataDto reactOnActivityData(ActivityDto activity) {
 		
 		int data = Integer.valueOf(activity.getData());
 		Integer brightness = 50;
@@ -74,31 +52,13 @@ public class LightController {
 			brightness = 255;
 		}
 		
-		LightDataDto light1 = new LightDataDto();
-		light1.setLightId(1);
-		light1.setOn(true);
-		light1.setCt(153);
-		light1.setBri(brightness);
-		light1.setTransitiontime(Long.valueOf(50));
+		LightDataDto light = new LightDataDto();
+		light.setOn(true);
+		light.setCt(153);
+		light.setBri(brightness);
+		light.setTt(Long.valueOf(50));
 		
-		LightDataDto light2 = new LightDataDto();
-		light2.setLightId(2);
-		light2.setOn(true);
-		light2.setCt(153);
-		light2.setBri(brightness);
-		light2.setTransitiontime(Long.valueOf(50));
 		
-		LightDataDto light3 = new LightDataDto();
-		light3.setLightId(3);
-		light3.setOn(true);
-		light3.setCt(153);
-		light3.setBri(brightness);
-		light3.setTransitiontime(Long.valueOf(50));
-		
-		lightsData.getLightData().add(light1);
-		lightsData.getLightData().add(light2);
-		lightsData.getLightData().add(light3);
-		
-		return lightsData;
+		return light;
 	}
 }

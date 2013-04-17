@@ -16,6 +16,7 @@ import at.ahls.controller.usecase.ActivityLogController;
 import at.ahls.controller.usecase.UserController;
 import at.ahls.web.rest.api.jaxb.ActivitiesDto;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
+import at.ahls.web.rest.api.jaxb.LightDataDto;
 import at.ahls.web.rest.api.jaxb.LightsDataDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
 import at.ahls.web.rest.api.jaxb.UserDto;
@@ -51,14 +52,14 @@ public class AHLS {
 		ActivityDto activityDto = activity.getValue();
 		
 		// dummy data
-		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
+		LightDataDto lightDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
-		JAXBElement<LightsDataDto> entity = of.createLightsData(lightsDataDto);
+		JAXBElement<LightDataDto> entity = of.createLightData(lightDataDto);
 				
 		// return response and data
-		return Response.ok().entity(new GenericEntity<JAXBElement<LightsDataDto>>(entity) {}).build();
+		return Response.ok().entity(new GenericEntity<JAXBElement<LightDataDto>>(entity) {}).build();
 	}
 
 	@GET @Path("/log/{count}")
@@ -93,14 +94,14 @@ public class AHLS {
 		
 		
 		// dummy data
-		LightsDataDto lightsDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
+		LightDataDto lightDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
-		JAXBElement<LightsDataDto> entity = of.createLightsData(lightsDataDto);
+		JAXBElement<LightDataDto> entity = of.createLightData(lightDataDto);
 				
 		// return response and data
-		return Response.ok().entity(new GenericEntity<JAXBElement<LightsDataDto>>(entity) {}).build();
+		return Response.ok().entity(new GenericEntity<JAXBElement<LightDataDto>>(entity) {}).build();
 	}
 	
 	@POST @Path("/user")

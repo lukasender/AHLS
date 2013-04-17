@@ -51,13 +51,12 @@
 	
 	<xsd:complexType name="light-data-dto">
 		<xsd:attribute name="on" type="xsd:boolean" />
-		<xsd:attribute name="light-id" type="light-id" />
 		<xsd:attribute name="ct" type="colorTemperature" />
 		<xsd:attribute name="bri" type="brightness" />
-		<xsd:attribute name="transitiontime" type="xsd:unsignedInt">
+		<xsd:attribute name="tt" type="xsd:unsignedInt">
 		<xsd:annotation>
 			<xsd:documentation>
-				Gibt die Zeit in 100ms an.
+				Transition Time: Gibt die Zeit in 100ms an.
 			</xsd:documentation>
 		</xsd:annotation>
 		</xsd:attribute>
