@@ -17,7 +17,6 @@ import at.ahls.controller.usecase.UserController;
 import at.ahls.web.rest.api.jaxb.ActivitiesDto;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
 import at.ahls.web.rest.api.jaxb.LightDataDto;
-import at.ahls.web.rest.api.jaxb.LightsDataDto;
 import at.ahls.web.rest.api.jaxb.ObjectFactory;
 import at.ahls.web.rest.api.jaxb.UserDto;
 import at.ahls.web.rest.util.ResponseBuilder;
@@ -30,10 +29,12 @@ public class AHLS {
 		return ResponseBuilder.ok();
 	}
 	
-	@GET @Path("/test")
+	public static LightDataDto lightReaction = new LightDataDto();
+	
+	@GET @Path("/test/{ct}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response testConnection() {		
-		System.out.println("Test successful? " + MainController.getInstance().getDBConnectorController().testConnection());
+	public Response testConnection(@PathParam("ct") int ct) {		
+//		System.out.println("Test successful? " + MainController.getInstance().getDBConnectorController().testConnection());
 //		ObjectFactory of = new ObjectFactory();
 //		ActivityDto dto = new ActivityDto();
 //		dto.setData("1338");
@@ -41,6 +42,9 @@ public class AHLS {
 //		JAXBElement<ActivityDto> entity = of.createActivity(dto);
 //		
 //		return Response.ok().entity(new GenericEntity<JAXBElement<ActivityDto>>(entity) {}).build();
+		
+		lightReaction.setCt(ct);
+		
 		return ResponseBuilder.ok();
 	}
 	
@@ -92,13 +96,14 @@ public class AHLS {
 		ActivityDto activityDto = activity.getValue();
 		controller.insertActivityLog(activityDto.getSensorId(), activityDto.getUsername(), activityDto.getData());
 		
-		
 		// dummy data
-		LightDataDto lightDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
+//		LightDataDto lightDataDto = MainController.getInstance().getLightController().reactOnActivityData(activityDto);
+		MainController.getInstance().getLightController().reactOnActivityData(activityDto);
 		
 		// create entity
 		ObjectFactory of = new ObjectFactory();
-		JAXBElement<LightDataDto> entity = of.createLightData(lightDataDto);
+		JAXBElement<LightDataDto> entity = of.createLightData(lightReaction);
+		System.out.println("REST /ahls/log, logActivity: Response: bri:" + lightReaction.getBri() + ", ct: " + lightReaction.getCt());
 				
 		// return response and data
 		return Response.ok().entity(new GenericEntity<JAXBElement<LightDataDto>>(entity) {}).build();

@@ -4,6 +4,7 @@ import at.ahls.light.LightState;
 import at.ahls.web.http.HTTPMethod;
 import at.ahls.web.http.HTTPRequest;
 import at.ahls.web.http.exception.UnsuccessfulRequestException;
+import at.ahls.web.rest.api.AHLS;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
 import at.ahls.web.rest.api.jaxb.LightDataDto;
 import at.ahls.web.rest.api.jaxb.LightsDataDto;
@@ -52,12 +53,13 @@ public class LightController {
 			brightness = 255;
 		}
 		
-		LightDataDto light = new LightDataDto();
-		light.setOn(true);
-		light.setCt(153);
-		light.setBri(brightness);
-		light.setTransitiontime(Long.valueOf(50));
+		AHLS.lightReaction.setOn(true);
+		if (AHLS.lightReaction.getCt() == null) {
+			AHLS.lightReaction.setCt(153);
+		}
+		AHLS.lightReaction.setBri(brightness);
+		AHLS.lightReaction.setTransitiontime(Long.valueOf(3));
 		
-		return light;
+		return null;
 	}
 }
