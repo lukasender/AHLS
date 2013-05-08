@@ -1,5 +1,5 @@
 /*
-  Web client
+  Arduino/Hue Client
  
  This sketch connects to a website (http://www.google.com)
  using an Arduino Wiznet Ethernet shield. 
@@ -7,10 +7,8 @@
  Circuit:
  * Ethernet shield attached to pins 10, 11, 12, 13
  
- created 18 Dec 2009
- modified 9 Apr 2012
- by David A. Mellis
- 
+ @Author: Stephan Svoboda
+ @created 27.3.2013
  */
 
 #include <SPI.h>
@@ -26,12 +24,6 @@ char hueUser[] = "stephan123";
 IPAddress server(192,168,0,243); // Hue Bridge
 
 //REDIRECT JSON
-// const int MAXBULBS = 50;
-// int commandCount = 0;
-// int startCommand = 0;
-// int endCommand = 0;
-// int startIndices[MAXBULBS];
-// int endIndices[MAXBULBS];
 int lightId = 3;
 String currResponse;
 
@@ -77,72 +69,6 @@ void contentBlock(char json[ ]){
   }
 
 }
-
-//extracts commands of AHLS light-data
-//void extractCommands(String response, int endIndices[]){
-//  int bodylength = response.length();
-//  int curr = 0;
-//  int commandStart = 0;
-//  int commandEnd = 0;
-//  commandCount = 0;
-
-//  while(curr < bodylength){
-
-//    switch(response[curr]){
-//    case '{': 
-//      startCommand = curr;//start found
-//      endIndices[startCommand] = endCommand;
-//      break;
-//    case  '}':
-//      endCommand = curr;
-//      endIndices[commandCount] = endCommand;
-//      commandCount++;
-//      break;
-      //default:
-      //reserved
-//    }
-//    curr++;
-//  }
-  //return endIndices;
-//}
-
-//returns light id and start and end of json with id
-//int getNextCommand(String message, int *msgStart, int *msgEnd, int *idStart, int *idEnd){
-//  boolean commandFound = false;
-//  boolean openBraceFound = false;
-//  int curr=*msgEnd;
-//  while(!commandFound && curr > message.length()){
-//    switch(message[curr]){
-//    case '{':
-//      openBraceFound = true;
-//      *msgStart = curr;
-//      break;
-//    case '}':
-//      if(openBraceFound){
-//        *msgEnd = curr;
-//        commandFound = true;
-//      }
-//      else{
-//        return -1;
-//      }
-//      break; 
-//    }
-//    curr++;
-//  }
-  //get light id
-//  boolean lightIdFound = false;
-//  int offset = *msgStart+8;
-//  offset = message.indexOf("\"light-id\":\"", offset); //"light-id":" 12 chars
-//  *idStart = offset;
-//  offset += 12;
-//  String id;
-//  while(message[12] != '\"' && isDigit(message[12])){
-//    id += message[12];
-//    offset++;
-//  }
-//  *idEnd = offset;
-//  return id.toInt();
-//}
 
 //writes response to currResponse
 void writeResponse(){
@@ -197,47 +123,37 @@ void sendRequest(char requestType[], char address[], char json[], IPAddress ip, 
 void executeResponse(){
     //clear currResponse for testint purpose
   String testResponse;
-  //test header
-  //testResponse += "HTTP \n";
-  //testResponse += "Content-length: \n";
-  //testResponse += "MIM-Type \n";
-  //testResponse += "\n";
-  //test message
+  /*start testresponse */
   testResponse += "{\"@on\":true, \"@transitiontime\":50, \"@bri\":255, \"@ct\":153}";
   currResponse = "";
-  for(int i = 0; i < testResponse.length(); i++){
-    if(testResponse[i] != '@'){
-      Serial.print("Character ");
-      Serial.print(testResponse[i]);
-      Serial.println(" added");
-      currResponse.concat(testResponse[i]);
-    } 
-  }
-//  int startMessage = currResponse.indexOf("\n\n")+2;//findStartOfMessage()
-//  String message = currResponse.substring(startMessage, currResponse.length());
+  /*end testresponse */
+//  for(int i = 0; i < testResponse.length(); i++){
+//    if(testResponse[i] != '@'){
+//      Serial.print("Character ");
+//      Serial.print(testResponse[i]);
+//      Serial.println(" added");
+//      currResponse.concat(testResponse[i]);
+//    } 
+//  }
+    //replace @ in json
+    currResponse.replace("\"@", "\"");
+    //correct type from string to int/bool
+    currResponse.replace(":\",",":");
+    currResponse.replace("\"}","}");
   
     Serial.println("Extracted message from response:");
-  Serial.println(currResponse);
-//  int *pStartJson = 0;
-//  int *pEndJson = 0;
-//  int *pIdStart = 0;
-//  int *pIdEnd = 0;
-//  int light = 0; //-->fix value
-//  while( light >= 0){
+    Serial.println(currResponse);
     String json;
-//    String cut;
     String hueAddress;
-//    light = getNextCommand (message, pStartJson, pEndJson, pIdStart, pIdEnd);
-//    cut = message.substring(*pIdStart, *pIdEnd);
     json = currResponse;
-//    json.replace(cut, "");
     Serial.print("JSON for light id ");
     Serial.print(lightId);
     Serial.print(": ");
     Serial.println(json);
     char jsonChar[json.length()+1];
     json.toCharArray(jsonChar, json.length()+1);
-
+    
+    //construct light state address
     hueAddress.concat("/api/");//concat(hueUser);// + "/lights" + light + "/state";
     hueAddress.concat(hueUser);// + "/lights" + light + "/state";
     hueAddress.concat("/lights/");// + light + "/state";
@@ -250,7 +166,6 @@ void executeResponse(){
     Serial.print("JSON sent to: ");
     Serial.println(hueChar);
     sendRequest("PUT", hueChar, jsonChar, server, 80);
-//  }
 }
 
 //MOTION DETECTION
