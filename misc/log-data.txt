@@ -1,0 +1,1 @@
+{"@sensor-id":1,"@username":"031796799e76cf794757b4cd59bd4eb7d0970abb","@data":"123"}

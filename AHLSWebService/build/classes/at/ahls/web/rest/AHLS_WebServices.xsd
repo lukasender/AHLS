@@ -16,23 +16,79 @@
 		</xsd:appinfo>
 	</xsd:annotation>
 
-	<xsd:element name="activity" type="activity-type" />
-	<xsd:element name="activities" type="activities-type" />
+	<xsd:element name="activity" type="activity-dto" />
+	<xsd:element name="activities" type="activities-dto" />
+	<xsd:element name="user" type="user-dto" />
+	<xsd:element name="lights-data" type="lights-data-dto" />
+	<xsd:element name="light-data" type="light-data-dto" />
 
-	<xsd:complexType name="activity-type">
+	<xsd:complexType name="activity-dto">
+		<xsd:attribute name="sensor-id" type="sensor-id" use="required">
+			<xsd:annotation>
+				<xsd:documentation>Represents the sensor id.</xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="username" type="string255" use="required" />
 		<xsd:attribute name="data" type="string255" use="required" />
+		<xsd:attribute name="time" type="xsd:dateTime" />
 	</xsd:complexType>
 
-	<xsd:complexType name="activities-type">
+	<xsd:complexType name="activities-dto">
 		<xsd:sequence>
-			<xsd:element name="activity" minOccurs="0" maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:attribute name="data" type="xsd:string" />
-					<xsd:attribute name="time" type="xsd:dateTime" />
-				</xsd:complexType>
-			</xsd:element>
+			<xsd:element name="activity" type="activity-dto" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
+	
+	<xsd:complexType name="user-dto">
+		<xsd:attribute name="username" type="string255" use="required" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="lights-data-dto">
+		<xsd:sequence>
+			<xsd:element name="light-data" type="light-data-dto" minOccurs="0" maxOccurs="50" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="light-data-dto">
+		<xsd:attribute name="on" type="xsd:boolean" />
+		<xsd:attribute name="ct" type="colorTemperature" />
+		<xsd:attribute name="bri" type="brightness" />
+		<xsd:attribute name="transitiontime" type="xsd:unsignedInt">
+		<xsd:annotation>
+			<xsd:documentation>
+				Transition Time: Gibt die Zeit in 100ms an.
+			</xsd:documentation>
+		</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="sensor-id">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="1" />
+			<xsd:maxInclusive value="256" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="colorTemperature">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="153" />
+			<xsd:maxInclusive value="500" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="light-id">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="1" />
+			<xsd:maxInclusive value="50" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="brightness">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="255" />
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<xsd:simpleType name="string255">
 		<xsd:restriction base="xsd:string">
