@@ -72,28 +72,38 @@ void contentBlock(char json[ ]){
 
 //writes response to currResponse
 void writeResponse(){
+  Serial.println("---start---writeResponse---");
   //while client is connected or has unread buffered bytes
   while(client.connected()){
-    String response;
-    while (client.available()) {
-      char oc = ' ';
-      boolean messageFound = false;
+    //String response;
+    currResponse = "";
+    char oc = ' ';
+    char ooc = ' ';
+    boolean messageFound = false;
+
+    while (client.available()) {     
       char cc = client.read();
-      if(&oc == "\n" && &cc == "\n"){
-        messageFound = true;
-      }
+      
       if(messageFound == true){
-        response.concat(cc);
+        currResponse = currResponse + cc;
+      }
+      
+      if(ooc == '\n' && oc == '\r' && cc == '\n'){
+        messageFound = true;        
       }
       responseDelivered = true;
+      
       Serial.print(cc);
+      ooc = oc;
+      oc = cc;
     }
-    currResponse = response;
+    //currResponse = response;
     Serial.println();
     Serial.println("---start---currResponse---");
     Serial.println(currResponse);
     Serial.println("---end---currResponse---");
   }
+   Serial.println("---end---writeResponse");
 }
 
 //sends request address is without ip
@@ -121,24 +131,11 @@ void sendRequest(char requestType[], char address[], char json[], IPAddress ip, 
 }
 
 void executeResponse(){
-    //clear currResponse for testint purpose
-  String testResponse;
-  /*start testresponse */
-  testResponse += "{\"@on\":true, \"@transitiontime\":50, \"@bri\":255, \"@ct\":153}";
-  currResponse = "";
-  /*end testresponse */
-//  for(int i = 0; i < testResponse.length(); i++){
-//    if(testResponse[i] != '@'){
-//      Serial.print("Character ");
-//      Serial.print(testResponse[i]);
-//      Serial.println(" added");
-//      currResponse.concat(testResponse[i]);
-//    } 
-//  }
     //replace @ in json
     currResponse.replace("\"@", "\"");
     //correct type from string to int/bool
-    currResponse.replace(":\",",":");
+    currResponse.replace(":\"",":");
+    currResponse.replace("\",",",");
     currResponse.replace("\"}","}");
   
     Serial.println("Extracted message from response:");
@@ -188,7 +185,7 @@ void doSensorReading(){
   // for the analog-to-digital converter to settle
   // after the last reading:
   delay(5);
-  char jsonBuffer[256];
+  char jsonBuffer[128];
   String jsonStart = String("{\"@sensor-id\":1,\"@username\":\"031796799e76cf794757b4cd59bd4eb7d0970abb\",\"@data\":\"");
   String jsonEnd = String("\"}"); //second "}" because strlen recognizes one char to less
   String json=String(jsonStart+oldSensorValue+jsonEnd);
@@ -214,10 +211,13 @@ void setup() {
   // give the Ethernet shield a second to initialize:
   delay(1000);
 //  Serial.println("---FIRST TEST REQUEST START---");  
-  while(connectSuccess == false){
-    sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
-  }
+//  while(connectSuccess == false){
+//    sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
+//  }
 //  Serial.println("---FIRST TEST REQUEST END---");
+
+   Serial.println();
+   Serial.println("---START SENSOR READING---");
 
 }
 
@@ -226,38 +226,12 @@ void loop()
 
   // if the server's disconnected, stop the client:
   if (!client.connected()) {
-    Serial.println();
-    Serial.println("disconnecting.");
-    client.stop();
 
-    // do nothing forevermore:
-    for(; testConnects<4; testConnects++){
-      sendRequest("PUT", hueTestAddress, "{\"on\":true, \"ct\":400}", server, 80);
-
-      client.stop();
-
-      Serial.println();
-      Serial.print("Test connect count:");
-      Serial.println(testConnects);
-    }
-
-    if(testConnects==4){
-
-      sendRequest("PUT", hueTestAddress, "{\"ct\":500}", server, 80);
-      client.stop();
-
-      sendRequest("PUT", hueTestAddress, "{\"on\":false, \"ct\":350, \"bri\":255}", server, 80);
-      client.stop();
-
-      Serial.println();
-      Serial.print("Test connect count:");
-      Serial.println(testConnects);
-      Serial.println("---START SENSOR READING---");
-      for(;;)
+    // do sensor reading forever:
         doSensorReading();
+        delay(50);//break time
+        //sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
     }
-
-  }
 }
 
 
