@@ -1,3 +1,4 @@
+
 /*
   Arduino/Hue Client
  
@@ -79,6 +80,7 @@ void writeResponse(){
     currResponse = "";
     char oc = ' ';
     char ooc = ' ';
+    int currResponseLength = 0;
     boolean messageFound = false;
 
     while (client.available()) {     
@@ -86,6 +88,9 @@ void writeResponse(){
       
       if(messageFound == true){
         currResponse = currResponse + cc;
+        currResponseLength++;
+        Serial.print("currResponse length: ");
+        Serial.println(currResponseLength);
       }
       
       if(ooc == '\n' && oc == '\r' && cc == '\n'){
@@ -185,7 +190,6 @@ void doSensorReading(){
   // for the analog-to-digital converter to settle
   // after the last reading:
   delay(5);
-  char jsonBuffer[128];
   String jsonStart = String("{\"@sensor-id\":1,\"@username\":\"031796799e76cf794757b4cd59bd4eb7d0970abb\",\"@data\":\"");
   String jsonEnd = String("\"}"); //second "}" because strlen recognizes one char to less
   String json=String(jsonStart+oldSensorValue+jsonEnd);
