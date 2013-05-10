@@ -87,17 +87,70 @@ void writeResponse(){
       char cc = client.read();
       
       if(messageFound == true){
-        currResponse = currResponse + cc;
-        currResponseLength++;
-        Serial.print("currResponse length: ");
-        Serial.println(currResponseLength);
+
+      switch (oc) {
+      case '{':
+        if (cc == '\"') {
+          // write oc
+          currResponse.concat(oc);
+          break;
+        }
+      case '"':
+        if (cc == '@') {
+          // write oc
+          currResponse.concat(oc);
+          break;
+        }
+        if (cc == ':') {
+          // write oc
+          currResponse.concat(oc);
+          break;
+        }
+        if (cc == ',') {
+          // do not write oc
+          break;
+        }
+        if (cc == '}'){
+          //do write cc
+          currResponse.concat(cc);
+          break;
+        }
+      case ':':
+        if (cc == '\"') {
+          // write oc
+          currResponse.concat(oc);
+          break;
+        }
+      case '@':
+        // do not write oc
+        break;
+      case ',':
+        // write oc
+        currResponse.concat(oc);
+        break;
+      case '}': 
+        // write oc
+        currResponse.concat(oc);
+        break;
+      case '\n':{
+        //do not write oc
+        break;
       }
-      
+      default:
+        currResponse.concat(oc);
+        break;
+      }
+      //currResponse = currResponse + cc;
+      currResponseLength++;
+      Serial.print("currResponse length: ");
+      Serial.println(currResponseLength);
+    }
+
       if(ooc == '\n' && oc == '\r' && cc == '\n'){
         messageFound = true;        
       }
       responseDelivered = true;
-      
+
       Serial.print(cc);
       ooc = oc;
       oc = cc;
@@ -108,7 +161,7 @@ void writeResponse(){
     Serial.println(currResponse);
     Serial.println("---end---currResponse---");
   }
-   Serial.println("---end---writeResponse");
+  Serial.println("---end---writeResponse");
 }
 
 //sends request address is without ip
@@ -136,38 +189,32 @@ void sendRequest(char requestType[], char address[], char json[], IPAddress ip, 
 }
 
 void executeResponse(){
-    //replace @ in json
-    currResponse.replace("\"@", "\"");
-    //correct type from string to int/bool
-    currResponse.replace(":\"",":");
-    currResponse.replace("\",",",");
-    currResponse.replace("\"}","}");
-  
-    Serial.println("Extracted message from response:");
-    Serial.println(currResponse);
-    String json;
-    String hueAddress;
-    json = currResponse;
-    Serial.print("JSON for light id ");
-    Serial.print(lightId);
-    Serial.print(": ");
-    Serial.println(json);
-    char jsonChar[json.length()+1];
-    json.toCharArray(jsonChar, json.length()+1);
-    
-    //construct light state address
-    hueAddress.concat("/api/");//concat(hueUser);// + "/lights" + light + "/state";
-    hueAddress.concat(hueUser);// + "/lights" + light + "/state";
-    hueAddress.concat("/lights/");// + light + "/state";
-    hueAddress.concat(lightId);
-    hueAddress.concat("/state");
-    Serial.print("JSON sent: ");
-    Serial.println(jsonChar);
-    char hueChar[hueAddress.length()+1];
-    hueAddress.toCharArray(hueChar, hueAddress.length()+1);
-    Serial.print("JSON sent to: ");
-    Serial.println(hueChar);
-    sendRequest("PUT", hueChar, jsonChar, server, 80);
+
+  Serial.println("Extracted message from response:");
+  Serial.println(currResponse);
+  String json;
+  String hueAddress;
+  json = currResponse;
+  Serial.print("JSON for light id ");
+  Serial.print(lightId);
+  Serial.print(": ");
+  Serial.println(json);
+  char jsonChar[json.length()+1];
+  json.toCharArray(jsonChar, json.length()+1);
+
+  //construct light state address
+  hueAddress.concat("/api/");//concat(hueUser);// + "/lights" + light + "/state";
+  hueAddress.concat(hueUser);// + "/lights" + light + "/state";
+  hueAddress.concat("/lights/");// + light + "/state";
+  hueAddress.concat(lightId);
+  hueAddress.concat("/state");
+  Serial.print("JSON sent: ");
+  Serial.println(jsonChar);
+  char hueChar[hueAddress.length()+1];
+  hueAddress.toCharArray(hueChar, hueAddress.length()+1);
+  Serial.print("JSON sent to: ");
+  Serial.println(hueChar);
+  sendRequest("PUT", hueChar, jsonChar, server, 80);
 }
 
 //MOTION DETECTION
@@ -214,14 +261,14 @@ void setup() {
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
-//  Serial.println("---FIRST TEST REQUEST START---");  
-//  while(connectSuccess == false){
-//    sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
-//  }
-//  Serial.println("---FIRST TEST REQUEST END---");
+  //  Serial.println("---FIRST TEST REQUEST START---");  
+  //  while(connectSuccess == false){
+  //    sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
+  //  }
+  //  Serial.println("---FIRST TEST REQUEST END---");
 
-   Serial.println();
-   Serial.println("---START SENSOR READING---");
+  Serial.println();
+  Serial.println("---START SENSOR READING---");
 
 }
 
@@ -232,11 +279,14 @@ void loop()
   if (!client.connected()) {
 
     // do sensor reading forever:
-        doSensorReading();
-        delay(50);//break time
-        //sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
-    }
+    doSensorReading();
+    delay(50);//break time
+    //sendRequest("PUT", hueTestAddress, "{\"on\":false}", server, 80);
+  }
 }
+
+
+
 
 
 
