@@ -35,7 +35,7 @@ public class ActivityLogController {
 		return _controller;
 	}
 	
-	public int insertActivityLog(int sensorId, String username, String data) {
+	public int insertActivityLog(int sensorId, String username, int data) {
 		System.out.println("ActivityLogController: insertActivityLog: trying to insert");
 		
 		Statement statement = null;
@@ -78,7 +78,7 @@ public class ActivityLogController {
 				ActivityDto activity = new ActivityDto();
 				activity.setSensorId(result.getInt("sensor"));
 				activity.setUsername(result.getString("username"));
-				activity.setData(result.getString("data"));
+				activity.setData(result.getInt("data"));
 
 				Timestamp time = result.getTimestamp("time");
 				GregorianCalendar cal = new GregorianCalendar();

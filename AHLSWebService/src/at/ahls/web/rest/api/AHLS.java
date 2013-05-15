@@ -86,11 +86,7 @@ public class AHLS {
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response logActivity(JAXBElement<ActivityDto> activity) {
 		// fetch from DB
-		String data = activity.getValue().getData();
-		System.out.println("POST /log: data: " + data);
-		if (data == null || data != null && ( "null".equals(data) || data.isEmpty())) {
-			return ResponseBuilder.badRequeset();
-		}
+		System.out.println("POST /log: data: " + activity.getValue().getData());
 		
 		ActivityLogController controller = MainController.getInstance().getActivityLogController();
 		ActivityDto activityDto = activity.getValue();

@@ -29,7 +29,7 @@
 			</xsd:annotation>
 		</xsd:attribute>
 		<xsd:attribute name="username" type="string255" use="required" />
-		<xsd:attribute name="data" type="string255" use="required" />
+		<xsd:attribute name="data" type="sensorData" use="required" />
 		<xsd:attribute name="time" type="xsd:dateTime" />
 	</xsd:complexType>
 
@@ -66,6 +66,13 @@
 		<xsd:restriction base="xsd:integer">
 			<xsd:minInclusive value="1" />
 			<xsd:maxInclusive value="256" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="sensorData">
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="1023" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

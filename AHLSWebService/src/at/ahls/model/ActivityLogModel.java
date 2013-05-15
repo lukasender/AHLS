@@ -11,7 +11,7 @@ public class ActivityLogModel extends ActivityDto {
 	
 	public ActivityLogModel() {}
 
-	public ActivityLogModel(int sensorId, int userId, String data) {
+	public ActivityLogModel(int sensorId, int userId, int data) {
 		setSensorId(sensorId);
 		setUserId(userId);
 		setData(data);
