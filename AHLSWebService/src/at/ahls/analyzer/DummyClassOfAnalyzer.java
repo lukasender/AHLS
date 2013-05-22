@@ -14,27 +14,36 @@ public class DummyClassOfAnalyzer {
 		
 	}
 	
+	
+	
 	public LightDataDto getLightData(){
 		ActivityLogController controller = MainController.getInstance().getActivityLogController();
 		ActivitiesDto activities = controller.getActivitiesTimeDiff(5000);
 		LightDataDto retVal = new LightDataDto();
 		
+		
+		
+		List<ActivityDto> act = activities.getActivity();
+		int diff = 0;
+		int averageTop = 600;
+		int averageBottom = 430;
+		
+		// get the diff of the Data value
+		for(int i = 1; i < act.size(); i++){
+			if((diff = averageBottom - act.get(i).getData()) < 0){
+				diff = 0;
+			}
+			else if ((diff = act.get(i).getData() - averageTop) < 0){
+				diff = 0;
+			}
+		}
+		
+		
+		
 		int bri = 0;
 		int ct = 0;
 		boolean on = false;
 		long transitiontime = 100;
-		
-		List<ActivityDto> act = activities.getActivity();
-		int diff = 0;
-		for(int i = 1; i < act.size(); i++){
-			int tmp = Integer.parseInt(act.get(i - 1).getData()) - Integer.parseInt(act.get(i).getData());
-			if(tmp > 0){
-				diff += tmp;
-			}
-			else{
-				diff += ((-1) * tmp);
-			}
-		}
 		
 		retVal.setBri(500);
 		retVal.setCt(500);
@@ -50,7 +59,7 @@ public class DummyClassOfAnalyzer {
 		int max = 0;
 		for(ActivityDto act : activities.getActivity()){
 			//Get the minimum and maximum of all Data
-			int currentData = Integer.parseInt(act.getData());
+			int currentData = act.getData();
 			if(min > currentData){
 				min = currentData;
 			}
@@ -69,7 +78,7 @@ public class DummyClassOfAnalyzer {
 		int max = 0;
 		for(ActivityDto act : activities.getActivity()){
 			//Get the minimum and maximum of all Data
-			int currentData = Integer.parseInt(act.getData());
+			int currentData = act.getData();
 			if(min > currentData){
 				min = currentData;
 			}

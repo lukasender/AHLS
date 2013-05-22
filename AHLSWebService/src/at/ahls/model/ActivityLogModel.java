@@ -1,5 +1,7 @@
 package at.ahls.model;
 
+import java.util.Date;
+
 import at.ahls.database.DBConnectionController;
 import at.ahls.web.rest.api.jaxb.ActivityDto;
 
@@ -38,6 +40,20 @@ public class ActivityLogModel extends ActivityDto {
 				+ "FROM " + "activity_log "
 				+ "ORDER BY id DESC " 
 				+ "LIMIT " + count;
+		
+		return queryString;
+	}
+	
+	public static String createSelectSQLTimeDiff(int diffMilliSeconds){
+		Date time = new Date();
+		time.setTime(time.getTime() - diffMilliSeconds);
+		
+		String queryString = "SELECT activity_log.id, sensor, user_id, username, data, time " 
+				+ "FROM " + "activity_log "
+				+ "INNER JOIN user "
+				+ "ON user_id = user.id "
+				+ "WHERE time BETWEEN " + time + " AND " + new Date() + " "
+				+ "ORDER BY activity_log.id DESC ";
 		
 		return queryString;
 	}
