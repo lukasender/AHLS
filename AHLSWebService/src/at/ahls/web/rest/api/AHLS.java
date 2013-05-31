@@ -31,9 +31,9 @@ public class AHLS {
 	
 	public static LightDataDto lightReaction = new LightDataDto();
 	
-	@GET @Path("/test/{ct}")
+	@GET @Path("/test/{bri}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response testConnection(@PathParam("ct") int ct) {		
+	public Response testConnection(@PathParam("ct") int bri) {		
 //		System.out.println("Test successful? " + MainController.getInstance().getDBConnectorController().testConnection());
 //		ObjectFactory of = new ObjectFactory();
 //		ActivityDto dto = new ActivityDto();
@@ -43,7 +43,7 @@ public class AHLS {
 //		
 //		return Response.ok().entity(new GenericEntity<JAXBElement<ActivityDto>>(entity) {}).build();
 		
-		lightReaction.setCt(ct);
+		lightReaction.setBri(bri);
 		
 		return ResponseBuilder.ok();
 	}
