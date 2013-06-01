@@ -33,7 +33,7 @@ public class AHLS {
 	
 	@GET @Path("/test/{bri}")
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response testConnection(@PathParam("ct") int bri) {		
+	public Response testConnection(@PathParam("bri") int bri) {		
 //		System.out.println("Test successful? " + MainController.getInstance().getDBConnectorController().testConnection());
 //		ObjectFactory of = new ObjectFactory();
 //		ActivityDto dto = new ActivityDto();

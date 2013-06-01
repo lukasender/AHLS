@@ -54,7 +54,7 @@ public class LightController {
 		}
 		
 		AHLS.lightReaction.setOn(true);
-		if (AHLS.lightReaction.getCt() == null) {
+		if (AHLS.lightReaction.getBri() == null) {
 			AHLS.lightReaction.setBri(100);
 		}
 		AHLS.lightReaction.setCt(colorTemperature);
