@@ -31,5 +31,5 @@ FOREIGN KEY (user_id) REFERENCES user(id)
 ON UPDATE CASCADE
 ON DELETE CASCADE;
 
-CREATE USER 'ahls'@'localhost' IDENTIFIED BY 'PASSWORD(ahls)';
+CREATE USER 'ahls'@'localhost' IDENTIFIED BY PASSWORD('ahls');
 GRANT ALL ON ahls_v1.* TO 'ahls'@'localhost';

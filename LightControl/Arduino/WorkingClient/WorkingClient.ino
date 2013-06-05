@@ -15,26 +15,23 @@
 #include <SPI.h>
 #include <Ethernet.h>
 
-//test address
-char hueTestAddress[] = "/api/stephan123/lights/3/state";
-
 //SERVER INFO
 IPAddress baseServer(192, 168, 0, 242);
 int baseServerPort = 8080;
-
-//HUE BRIDGE INFO
-char hueUser[] = "stephan123";
-IPAddress hueServer(192, 168, 0, 243);
-int hueServerPort = 80;
-
-//REDIRECT JSON
-int lightId = 3;
-String currResponse;
 
 //REST CLIENT
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+
+//HUE BRIDGE INFO
+char hueUser[] = "stephan123";
+IPAddress hueServer(192, 168, 0, 244);
+int hueServerPort = 80;
+
+//REDIRECT JSON
+int lightId = 3;
+String currResponse;
 
 boolean connectSuccess = false;
 boolean responseDelivered = false;
@@ -60,25 +57,9 @@ String usernameTag = String(",\"@username\":\"");
 String dataTag = String("\",\"@data\":");
 String endTag = String ("}");
 
-//ensures that exact length of json is sent
-void contentBlock(char json[]) {
-  int length = strlen(json);
-  if(length >= 0) {
-    client.print("Content-Length:");
-    client.println(length);
-    Serial.println(length);
-    client.println("Content-type: application/json");
-  }
-  client.println();
-  if(length >= 0) {
-    client.print(json);
-  }
-
-}
-
 //writes response to currResponse
-void writeResponse() {
-  Serial.println("---start---writeResponse---");
+void processResponse() {
+  Serial.println("processResponse: processing response: processResponse");
   //while client is connected or has unread buffered bytes
   while(client.connected()) {
     //String response;
@@ -88,8 +69,9 @@ void writeResponse() {
     int currResponseLength = 0;
     boolean messageFound = false;
 
-    while (client.available()) {     
+    while (client.available()) {
       char cc = client.read();
+      Serial.print(cc);
       
       if(messageFound == true) {
 
@@ -159,8 +141,22 @@ void writeResponse() {
   }
 }
 
+//ensures that exact length of json is sent
+void contentBlock(char json[]) {
+  int length = strlen(json);
+  if (length >= 0) {
+    client.print("Content-Length:");
+    client.println(length);
+    client.println("Content-type: application/json");
+  }
+  client.println();
+  if (length >= 0) {
+    client.print(json);
+  }
+}
+
 //sends request address is without ip
-void sendRequest(char requestType[], char address[], char json[], IPAddress ip, int port){
+void sendRequest(char requestType[], char address[], char json[], IPAddress ip, int port) {
   //set connectSuccess to false
   connectSuccess = false;
   Serial.println("connecting...");
@@ -173,7 +169,8 @@ void sendRequest(char requestType[], char address[], char json[], IPAddress ip, 
       contentBlock(json);
       connectSuccess = true;
       //connection successful waiting for response
-      writeResponse();
+      // TODO: change this to a function pointer?
+      processResponse();
       client.stop();
     } else {
       Serial.println(client.available());
@@ -184,13 +181,8 @@ void sendRequest(char requestType[], char address[], char json[], IPAddress ip, 
 
 void executeResponse(){
   Serial.println("executeResponse");
-  Serial.println(currResponse);
   String json = currResponse;
   String hueAddress;
-  Serial.print("JSON for light id ");
-  Serial.print(lightId);
-  Serial.print(": ");
-  Serial.println(json);
   char jsonChar[json.length() + 1];
   json.toCharArray(jsonChar, json.length() + 1);
 
@@ -200,24 +192,14 @@ void executeResponse(){
   hueAddress.concat("/lights/");
   hueAddress.concat(lightId);
   hueAddress.concat("/state");
-  Serial.print("JSON sent: ");
-  Serial.println(jsonChar);
   char hueChar[hueAddress.length() + 1];
   hueAddress.toCharArray(hueChar, hueAddress.length() + 1);
-  Serial.print("JSON sent to: ");
-  Serial.println(hueChar);
   sendRequest("PUT", hueChar, jsonChar, hueServer, hueServerPort);
 }
 
 //MOTION DETECTION
-
-void readSensor(){
-  // read the analog in value:
-  sensorValue = analogRead(analogInPin);            
-  // map it to the range of the analog out:
-  
-  //outputValue = map(sensorValue, 0, 1023, 0, 255);
-  //oldSensorValue = (oldSensorValue + sensorValue) / 2;
+void readSensor() {
+  sensorValue = analogRead(analogInPin);
 }
 
 void postActivityData(int sensorId, String username) {
@@ -226,37 +208,31 @@ void postActivityData(int sensorId, String username) {
   json.toCharArray(jsonChar, json.length() + 1);
   Serial.println(json);
   currResponse = "";
-
   sendRequest("POST", "/AHLSWebService/ahls/log", jsonChar, baseServer, baseServerPort);
 }
 
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
-
   // start the Ethernet connection:
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // no point in carrying on, so do nothing forevermore:
-    for(;;)
-      ;
+    while(1);
   }
   // give the Ethernet shield a second to initialize:
   delay(1000);
-  
-  Serial.println("---START SENSOR READING---");
+  Serial.println("initialized");
 }
 
-void loop()
-{
+void loop() {
   // if the server's disconnected, stop the client:
   if (!client.connected()) {
 
     // do sensor reading forever:
     readSensor();
     postActivityData(1, "031796799e76cf794757b4cd59bd4eb7d0970abb");
-    //executeResponse();
-    //sendRequest("PUT", hueTestAddress, "{\"on\":false}", hueServer, hueServerPort);
+    executeResponse();
   }
 }
 

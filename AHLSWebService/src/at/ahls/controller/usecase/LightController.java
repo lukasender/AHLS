@@ -45,19 +45,19 @@ public class LightController {
 	public LightDataDto reactOnActivityData(ActivityDto activity) {
 		
 		int data = Integer.valueOf(activity.getData());
-		Integer brightness = 50;
+		Integer colorTemperature = 153;
 		if (data > 600) {
-			brightness = 255;
+			colorTemperature = 500;
 		}
 		if (data < 400) {
-			brightness = 255;
+			colorTemperature = 500;
 		}
 		
 		AHLS.lightReaction.setOn(true);
-		if (AHLS.lightReaction.getCt() == null) {
-			AHLS.lightReaction.setCt(153);
+		if (AHLS.lightReaction.getBri() == null) {
+			AHLS.lightReaction.setBri(100);
 		}
-		AHLS.lightReaction.setBri(brightness);
+		AHLS.lightReaction.setCt(colorTemperature);
 		AHLS.lightReaction.setTransitiontime(Long.valueOf(3));
 		
 		return null;
