@@ -26,16 +26,22 @@ public class DummyClassOfAnalyzer {
 		List<ActivityDto> act = activities.getActivity();
 		int diff = 0;
 		int averageTop = 600;
-		int averageBottom = 430;
+		int averageBottom = 424;
 		
-		// get the diff of the Data value
+		int sum = 0;
+		int alpha = 10;
+		int beta = 10;
+		
 		for(int i = 1; i < act.size(); i++){
+			// get the diff of the Data value
 			if((diff = averageBottom - act.get(i).getData()) < 0){
 				diff = 0;
 			}
 			else if ((diff = act.get(i).getData() - averageTop) < 0){
 				diff = 0;
 			}
+			
+			sum += Math.abs(diff - alpha - beta * i);
 		}
 		
 		
