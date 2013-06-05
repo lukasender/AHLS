@@ -32,7 +32,7 @@ Make sure you can connect to your MySQL database with a user 'ahls' and a passwo
 ### Arduino
 - Compile and push `AHLS/LightControl/Arduino/WorkingClient/WorkingClient.ino` to your Arduino.
 - Attention: You may need to adjust the IP address of you Philips Hue Bridge!
-- - You can either adjust the IP in the code or in the IP settings of your router (at this time, we use `192.168.0.244`)
+- - You can either adjust the IP of the Philips Hue Bridge in the code of the Arduino or in the IP settings of your router (at this time, we use `192.168.0.244`)
 - - The same is true for the web server. We use `192.168.0.242` at this time.
 - Connect to movement sensors to your Arduino (5V, GND, GND and A0 for data signals).
 - Connect it to your network.
