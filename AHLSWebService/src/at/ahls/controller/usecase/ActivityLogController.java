@@ -78,7 +78,7 @@ public class ActivityLogController {
 				ActivityDto activity = new ActivityDto();
 				activity.setSensorId(result.getInt("sensor"));
 				activity.setUsername(result.getString("username"));
-				activity.setData(result.getString("data"));
+				activity.setData(result.getInt("data"));
 
 				Timestamp time = result.getTimestamp("time");
 				GregorianCalendar cal = new GregorianCalendar();
