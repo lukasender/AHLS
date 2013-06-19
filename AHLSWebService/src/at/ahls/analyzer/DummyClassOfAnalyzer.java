@@ -17,39 +17,46 @@ public class DummyClassOfAnalyzer {
 	
 	
 	public LightDataDto getLightData(){
-		ActivityLogController controller = MainController.getInstance().getActivityLogController();
-		ActivitiesDto activities = controller.getActivitiesTimeDiff(5000);
-		LightDataDto retVal = new LightDataDto();
-		
-		
-		
-		List<ActivityDto> act = activities.getActivity();
-		int diff = 0;
-		int averageTop = 600;
-		int averageBottom = 430;
-		
-		// get the diff of the Data value
-		for(int i = 1; i < act.size(); i++){
-			if((diff = averageBottom - act.get(i).getData()) < 0){
-				diff = 0;
-			}
-			else if ((diff = act.get(i).getData() - averageTop) < 0){
-				diff = 0;
-			}
-		}
-		
-		
-		
-		int bri = 0;
-		int ct = 0;
-		boolean on = false;
-		long transitiontime = 100;
-		
-		retVal.setBri(500);
-		retVal.setCt(500);
-		retVal.setOn(true);
-		retVal.setTransitiontime((long)100);
-		return retVal;
+//		ActivityLogController controller = MainController.getInstance().getActivityLogController();
+////		ActivitiesDto activities = controller.getActivitiesTimeDiff(5000);
+//		LightDataDto retVal = new LightDataDto();
+//		
+//		
+//		
+//		List<ActivityDto> act = activities.getActivity();
+//		int diff = 0;
+//		int averageTop = 600;
+//		int averageBottom = 424;
+//		
+//		int sum = 0;
+//		int alpha = 10;
+//		int beta = 10;
+//		
+//		for(int i = 1; i < act.size(); i++){
+//			// get the diff of the Data value
+//			if((diff = averageBottom - act.get(i).getData()) < 0){
+//				diff = 0;
+//			}
+//			else if ((diff = act.get(i).getData() - averageTop) < 0){
+//				diff = 0;
+//			}
+//			
+//			sum += Math.abs(diff - alpha - beta * i);
+//		}
+//		
+//		
+//		
+//		int bri = 0;
+//		int ct = 0;
+//		boolean on = false;
+//		long transitiontime = 100;
+//		
+//		retVal.setBri(500);
+//		retVal.setCt(500);
+//		retVal.setOn(true);
+//		retVal.setTransitiontime((long)100);
+//		return retVal;
+		return null;
 	}
 	
 	public int getDiff(){
