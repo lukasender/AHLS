@@ -44,3 +44,7 @@ Make sure you can connect to your MySQL database with a user 'ahls' and a passwo
 ### Philips Hue
 - Set it up according the the Philips Hue instructions.
 - Each LED has a unique ID. Use the LED with ID = 3 (or change it in the Arduino software).
+
+### Network related issues
+- Make sure the network is set up correctly.
+- Make sure your server is available and connectable (e.g. firewall exceptions for port 8080)
