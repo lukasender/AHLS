@@ -62,43 +62,43 @@ public class ActivityLogController {
 		}
 	}
 
-	public ActivitiesDto getActivitiesTimeDiff(int diffMilliseconds) {
-		System.out.println("ActivityLogController: getActivities: trying to fetch data");
-		ResultSet result = null;
-		try {
-			Statement statement = DBConnectionController.getInstance().getConnection().createStatement();
-			String queryString = ActivityLogModel.createSelectSQLTimeDiff(diffMilliseconds);
-
-			result = statement.executeQuery(queryString);
-			ObjectFactory of = new ObjectFactory();
-			ActivitiesDto activities = of.createActivitiesDto();
-			List<ActivityDto> activitiesList = activities.getActivity();
-
-			while (result.next()) {
-				ActivityDto activity = new ActivityDto();
-				activity.setSensorId(result.getInt("sensor"));
-				activity.setUsername(result.getString("username"));
-				activity.setData(result.getString("data"));
-
-				Timestamp time = result.getTimestamp("time");
-				GregorianCalendar cal = new GregorianCalendar();
-				cal.setTimeInMillis(time.getTime());
-				XMLGregorianCalendar timestamp = new XMLGregorianCalendarImpl(cal);
-				timestamp.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
-				activity.setTime(timestamp);
-
-				activitiesList.add(activity);
-			}
-
-			return activities;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close(result);
-		}
-
-		return null;
-	}
+//	public ActivitiesDto getActivitiesTimeDiff(int diffMilliseconds) {
+//		System.out.println("ActivityLogController: getActivities: trying to fetch data");
+//		ResultSet result = null;
+//		try {
+//			Statement statement = DBConnectionController.getInstance().getConnection().createStatement();
+//			String queryString = ActivityLogModel.createSelectSQLTimeDiff(diffMilliseconds);
+//
+//			result = statement.executeQuery(queryString);
+//			ObjectFactory of = new ObjectFactory();
+//			ActivitiesDto activities = of.createActivitiesDto();
+//			List<ActivityDto> activitiesList = activities.getActivity();
+//
+//			while (result.next()) {
+//				ActivityDto activity = new ActivityDto();
+//				activity.setSensorId(result.getInt("sensor"));
+//				activity.setUsername(result.getString("username"));
+//				activity.setData(result.getString("data"));
+//
+//				Timestamp time = result.getTimestamp("time");
+//				GregorianCalendar cal = new GregorianCalendar();
+//				cal.setTimeInMillis(time.getTime());
+//				XMLGregorianCalendar timestamp = new XMLGregorianCalendarImpl(cal);
+//				timestamp.setTimezone(DatatypeConstants.FIELD_UNDEFINED);
+//				activity.setTime(timestamp);
+//
+//				activitiesList.add(activity);
+//			}
+//
+//			return activities;
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			close(result);
+//		}
+//
+//		return null;
+//	}
 	
 	public ActivitiesDto getActivities(int count) {
 		System.out.println("ActivityLogController: getActivities: trying to fetch data");

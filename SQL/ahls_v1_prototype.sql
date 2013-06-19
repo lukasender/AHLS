@@ -33,3 +33,6 @@ ON DELETE CASCADE;
 
 CREATE USER 'ahls'@'localhost' IDENTIFIED BY PASSWORD('ahls');
 GRANT ALL ON ahls_v1.* TO 'ahls'@'localhost';
+
+-- create test user
+INSERT INTO user (username, registered) VALUES('031796799e76cf794757b4cd59bd4eb7d0970abb', NOW());
